@@ -1,0 +1,160 @@
+/* =========================================================
+   LORD VOLITAK · estética de fantasía oscura
+   Paleta: ceniza (fondo), hueso (texto), oro apagado (marcos),
+   sangre (vida), podredumbre (enlace neuronal / estamina).
+   ========================================================= */
+:root {
+  --ash:        #0b0907;
+  --ash-2:      #15110d;
+  --bone:       #d9cfb6;
+  --bone-dim:   #8f866f;
+  --gold:       #c8a24a;
+  --gold-dim:   #6f5a2a;
+  --blood:      #a02121;
+  --blood-deep: #3b0c0c;
+  --rot:        #93a032;
+  --rot-deep:   #2b3010;
+
+  --font-gothic: "UnifrakturCook", "Old English Text MT", "Georgia", serif;
+  --font-text:   "IM Fell English", "Georgia", "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ash);
+  color: var(--bone);
+  font-family: var(--font-text);
+  user-select: none;
+}
+
+/* El canvas ocupa toda la ventana */
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* Viñeta: su opacidad la controla game.js según la actividad neuronal */
+#vignette {
+  position: fixed; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(120, 10, 10, .75) 100%);
+}
+
+#hud { position: fixed; inset: 0; pointer-events: none; }
+
+/* ---------- Barras del jugador ---------- */
+#player-bars {
+  position: absolute; top: 24px; left: 28px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.bar {
+  height: 14px;
+  background: #0d0a08;
+  border: 1px solid var(--gold-dim);
+  box-shadow: 0 0 0 1px #000, inset 0 0 6px #000;
+  overflow: hidden;
+}
+.bar > i { display: block; height: 100%; width: 100%; transition: width .12s linear; }
+.bar.hp { width: min(340px, 42vw); }
+.bar.hp > i { background: linear-gradient(#b72a2a, #6d1313); }
+.bar.st { width: min(260px, 32vw); height: 10px; }
+.bar.st > i { background: linear-gradient(#8ea04a, #4b5a22); }
+.bar.hp { transition: box-shadow .3s; }
+.bar.hp.heal { box-shadow: 0 0 0 1px #000, 0 0 16px 2px rgba(224, 184, 74, .85); }   /* destello dorado al curarse con Estus */
+
+/* Frascos de Estus */
+#estus { display: flex; align-items: center; gap: 8px; margin-top: 4px; color: var(--gold); transition: color .2s, filter .2s; }
+#estus .pips { display: flex; gap: 5px; }
+#estus .pips i { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 6px rgba(200,162,74,.7); transition: background .2s, box-shadow .2s; }
+#estus .pips i.spent { background: #1d1710; box-shadow: inset 0 0 0 1px var(--gold-dim); }
+#estus.drinking { filter: drop-shadow(0 0 8px rgba(255, 190, 70, .95)); }
+#estus.empty { color: var(--gold-dim); }
+
+/* ---------- Panel del enlace neuronal ---------- */
+#link-panel {
+  position: absolute; top: 20px; right: 24px; width: 258px;
+  padding: 10px 9px 8px;
+  background: rgba(11, 9, 7, .72);
+  border: 1px solid var(--gold-dim);
+  box-shadow: 0 0 0 1px #000;
+}
+#link-status { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--bone-dim); margin-bottom: 7px; }
+#link-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: #4a1a1a; }
+#link-dot.ok   { background: var(--rot);  box-shadow: 0 0 8px var(--rot); }
+#link-dot.warn { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+#link-dot.off  { background: var(--blood); }
+#scope { display: block; width: 240px; height: 56px; background: #070605; border: 1px solid #231c14; }
+#link-readout { display: flex; justify-content: space-between; margin-top: 6px; font-size: 14px; color: var(--bone-dim); }
+#link-readout b { color: var(--bone); font-weight: normal; margin-left: 4px; }
+
+/* ---------- Barra del jefe ---------- */
+#boss-bar {
+  position: absolute; left: 50%; bottom: 7vh; transform: translateX(-50%);
+  width: min(780px, 82vw);
+}
+.boss-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; padding: 0 2px; }
+#boss-name {
+  font-family: var(--font-text); font-weight: normal; font-size: clamp(17px, 2.1vw, 23px);
+  letter-spacing: .04em; color: var(--bone); text-shadow: 0 1px 3px #000, 0 0 12px rgba(0,0,0,.9);
+}
+#boss-dmg { font-size: 19px; color: var(--gold); text-shadow: 0 1px 3px #000; min-width: 3ch; text-align: right; }
+
+.track {
+  position: relative; height: 15px;
+  background: #0a0706;
+  border: 2px solid var(--gold-dim);
+  outline: 1px solid #000;
+  box-shadow: inset 0 0 8px #000, 0 0 18px rgba(0,0,0,.8);
+}
+.track > i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; }
+#boss-ghost { background: var(--gold); opacity: .85; }           /* daño reciente (se vacía con retraso) */
+#boss-fill  { background: linear-gradient(#a82626, #5e1010); }  /* vida actual */
+#boss-bar.enraged .track { border-color: var(--blood); box-shadow: inset 0 0 8px #000, 0 0 22px rgba(160, 33, 33, .6); }   /* fase 2 */
+#boss-bar.enraged #boss-name { color: #e0b0a0; }
+
+#controls { position: absolute; left: 28px; bottom: 18px; font-size: 14px; color: var(--bone-dim); text-shadow: 0 1px 2px #000; }
+#fps { position: absolute; right: 24px; bottom: 18px; font-size: 13px; color: var(--bone-dim); }
+
+/* ---------- Banner central ---------- */
+#banner {
+  position: fixed; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  padding: 34px 0; text-align: center; pointer-events: none;
+  font-family: var(--font-gothic); font-size: clamp(54px, 9vw, 120px); letter-spacing: .06em;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.82) 18%, rgba(0,0,0,.82) 82%, transparent);
+  opacity: 0; transition: opacity 1.2s ease;
+}
+#banner.show { opacity: 1; }
+#banner.dead { color: var(--blood); text-shadow: 0 0 30px rgba(160, 33, 33, .55); }
+#banner.won  { color: var(--gold);  text-shadow: 0 0 30px rgba(200, 162, 74, .45); }
+
+/* ---------- Pantalla de entrada ---------- */
+#gate {
+  position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(60, 66, 24, .28), transparent 60%),
+    radial-gradient(ellipse at center, rgba(11,9,7,.78), var(--ash) 85%);
+  transition: opacity 1.4s ease;
+}
+#gate.leave { opacity: 0; pointer-events: none; }
+.gate-inner { animation: gate-in 2.2s ease both; padding: 0 24px; }
+#gate h2 { font-family: var(--font-gothic); font-weight: 700; font-size: clamp(54px, 10vw, 118px); color: var(--bone); line-height: 1; text-shadow: 0 0 40px rgba(147, 160, 50, .25); }
+.gate-sub { margin-top: 10px; font-size: clamp(18px, 2.4vw, 26px); font-style: italic; color: var(--gold); letter-spacing: .08em; }
+#gate-btn {
+  margin-top: 44px; padding: 12px 38px; cursor: pointer;
+  font-family: var(--font-text); font-size: 21px; color: var(--bone); letter-spacing: .06em;
+  background: transparent; border: 1px solid var(--gold-dim); outline: 1px solid #000; outline-offset: 3px;
+  transition: color .2s, border-color .2s, background .2s;
+}
+#gate-btn:hover, #gate-btn:focus-visible { color: #fff; border-color: var(--gold); background: rgba(200, 162, 74, .08); }
+#gate-btn:focus-visible { outline: 2px solid var(--gold); }
+.gate-hint { margin-top: 26px; font-size: 16px; color: var(--bone-dim); font-style: italic; }
+
+@keyframes gate-in { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: blur(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-inner { animation: none; }
+  #banner, #gate { transition: none; }
+}
+@media (max-width: 720px) {
+  #link-panel { display: none; }
+  #controls { display: none; }
+}

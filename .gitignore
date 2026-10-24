@@ -1,0 +1,45 @@
+# ==========================================
+# Entornos Virtuales (Locales)
+# ==========================================
+.venv/
+venv/
+Flysrc/PyhtonBrain/envs/
+envs/
+ENV/
+env/
+
+# ==========================================
+# Caché de Python y Compilación
+# ==========================================
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ==========================================
+# Datos Crudos Pesados (Flysrc/data/raw)
+# (Se conservan localmente pero no suben a GitHub)
+# ==========================================
+Flysrc/data/raw/*.csv.gz
+*.csv.gz
+
+# ==========================================
+# IDEs, VS Code y Sistema Operativo
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# ==========================================
+# Logs y Variables de Entorno
+# ==========================================
+*.log
+.env
+.env.local

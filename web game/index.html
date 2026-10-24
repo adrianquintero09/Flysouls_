@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fly Souls · Lord Volitak, The Pestilential Swarm</title>
+
+  <!-- Fuentes: UnifrakturCook (gótica, títulos) + IM Fell English (texto y UI).
+       Si no hay internet, style.css define alternativas serif. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Lienzo WebGL donde Three.js dibuja la arena -->
+  <canvas id="game"></canvas>
+
+  <!-- Viñeta roja que se intensifica con la actividad de la SNN -->
+  <div id="vignette"></div>
+
+  <!-- ========== HUD ========== -->
+  <div id="hud">
+
+    <!-- Barras del jugador (arriba a la izquierda, como en Souls) -->
+    <section id="player-bars" aria-label="Estado del jugador">
+      <div class="bar hp"><i id="hp-fill"></i></div>
+      <div class="bar st"><i id="st-fill"></i></div>
+      <!-- Frascos de Estus: 3 usos (tecla Q) -->
+      <div id="estus" aria-label="Frascos de Estus">
+        <svg viewBox="0 0 24 32" width="18" height="24" aria-hidden="true">
+          <path d="M9 2h6v3l-1 1v4c4 2 7 6 7 11a7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7c0-5 3-9 7-11V6L9 5z" fill="currentColor"/>
+        </svg>
+        <span class="pips"><i></i><i></i><i></i></span>
+      </div>
+    </section>
+
+    <!-- Panel del enlace neuronal: estado del WebSocket + osciloscopio -->
+    <section id="link-panel" aria-label="Enlace con la red neuronal">
+      <div id="link-status">
+        <span id="link-dot" class="off"></span>
+        <span id="link-text">Conectando…</span>
+      </div>
+      <canvas id="scope" width="240" height="56"></canvas>
+      <div id="link-readout">
+        <span>Actividad <b id="ro-activity">0%</b></span>
+        <span>Disparo <b id="ro-action">—</b></span>
+      </div>
+    </section>
+
+    <!-- Barra de vida del jefe (abajo al centro) -->
+    <section id="boss-bar" aria-label="Vida del jefe">
+      <div class="boss-head">
+        <h1 id="boss-name">Lord Volitak, The Pestilential Swarm</h1>
+        <span id="boss-dmg"></span>
+      </div>
+      <div class="track">
+        <i id="boss-ghost"></i>
+        <i id="boss-fill"></i>
+      </div>
+    </section>
+
+    <p id="controls">
+      WASD mover · Espacio rodar · J / clic izq. atacar · Shift / clic der. escudo · Q Estus · M simulación · R reiniciar
+    </p>
+    <p id="fps"></p>
+  </div>
+
+  <!-- Banner central: HAS MUERTO / ENEMIGO ABATIDO -->
+  <div id="banner" aria-live="polite"></div>
+
+  <!-- Pantalla inicial: la "niebla" que hay que traspasar -->
+  <div id="gate">
+    <div class="gate-inner">
+      <h2>Lord Volitak</h2>
+      <p class="gate-sub">The Pestilential Swarm</p>
+      <button id="gate-btn" type="button">Traspasar la niebla</button>
+      <p class="gate-hint">Su mente es un conectoma real. Cada paso que des será su estímulo.</p>
+    </div>
+  </div>
+
+  <!-- Three.js r128 (build UMD clásico, expone window.THREE) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
