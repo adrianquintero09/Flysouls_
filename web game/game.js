@@ -22,7 +22,7 @@
    1. CONFIG
    ============================================================================= */
 const CONFIG = {
-  WS_URL: "ws://localhost:8000/ws",
+  WS_URL: "https://flysouls.onrender.com",
   RECONNECT_MS: 2000,
   AUTO_MOCK_AFTER_MS: 4000,      // sin datos reales tras este tiempo → simulación local
   ACTION_MAX_AGE_MS: 1500,       // las órdenes de movimiento (approach/retreat) caducan
