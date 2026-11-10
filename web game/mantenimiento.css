@@ -1,0 +1,110 @@
+ :root {
+      --bg-color: #08080c;
+      --panel-bg: #111119;
+      --accent-gold: #c8a050;
+      --accent-red: #8b0000;
+      --text-main: #dcdcdc;
+      --text-dim: #7a7a8a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Efecto Scanline PS1 Retro */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .maintenance-container {
+      background-color: var(--panel-bg);
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      padding: 3rem 2rem;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 0px var(--accent-red);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .status-box {
+      border: 1px dashed var(--accent-red);
+      background-color: rgba(139, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .status-text {
+      font-size: 1.2rem;
+      color: #ff4d4d;
+      font-weight: bold;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+
+    .release-date {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+
+    .release-date span {
+      color: var(--accent-gold);
+      font-size: 1.4rem;
+      font-weight: bold;
+      display: block;
+      margin-top: 0.3rem;
+    }
+
+    .footer-note {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
